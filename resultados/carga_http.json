@@ -1,0 +1,90 @@
+[
+  {
+    "perfil": "base",
+    "usuarios": 5,
+    "peticiones": 270,
+    "rendimiento_rps": 18.0,
+    "p50_ms": 307.94076999995923,
+    "p95_ms": 503.3447830001023,
+    "p95_vista_ms": 526.8388590000086,
+    "media_ms": 274.55691131482143,
+    "error_pct": 0.0
+  },
+  {
+    "perfil": "base",
+    "usuarios": 10,
+    "peticiones": 262,
+    "rendimiento_rps": 17.466666666666665,
+    "p50_ms": 633.858236000151,
+    "p95_ms": 928.1252180001047,
+    "p95_vista_ms": 975.6308690000424,
+    "media_ms": 559.2816383778605,
+    "error_pct": 0.0
+  },
+  {
+    "perfil": "base",
+    "usuarios": 25,
+    "peticiones": 245,
+    "rendimiento_rps": 16.333333333333332,
+    "p50_ms": 1660.0439750000078,
+    "p95_ms": 2592.1796330001143,
+    "p95_vista_ms": 2653.641071000038,
+    "media_ms": 1507.1667262734675,
+    "error_pct": 0.0
+  },
+  {
+    "perfil": "base",
+    "usuarios": 50,
+    "peticiones": 247,
+    "rendimiento_rps": 16.466666666666665,
+    "p50_ms": 3025.148811000008,
+    "p95_ms": 4532.630657000027,
+    "p95_vista_ms": 4621.377301999928,
+    "media_ms": 2850.8711588745036,
+    "error_pct": 0.0
+  },
+  {
+    "perfil": "optimizado",
+    "usuarios": 5,
+    "peticiones": 5699,
+    "rendimiento_rps": 379.93333333333334,
+    "p50_ms": 12.003627000012784,
+    "p95_ms": 24.451858000020366,
+    "p95_vista_ms": 25.27428400003373,
+    "media_ms": 13.139960354624904,
+    "error_pct": 0.0
+  },
+  {
+    "perfil": "optimizado",
+    "usuarios": 10,
+    "peticiones": 5248,
+    "rendimiento_rps": 349.8666666666667,
+    "p50_ms": 27.297907000047417,
+    "p95_ms": 50.8309479998843,
+    "p95_vista_ms": 53.30723400015813,
+    "media_ms": 28.55248500018803,
+    "error_pct": 0.0
+  },
+  {
+    "perfil": "optimizado",
+    "usuarios": 25,
+    "peticiones": 4559,
+    "rendimiento_rps": 303.93333333333334,
+    "p50_ms": 79.08458399992924,
+    "p95_ms": 141.41070100004072,
+    "p95_vista_ms": 145.29005700001107,
+    "media_ms": 82.12916006427093,
+    "error_pct": 0.0
+  },
+  {
+    "perfil": "optimizado",
+    "usuarios": 50,
+    "peticiones": 4308,
+    "rendimiento_rps": 287.2,
+    "p50_ms": 165.87514399998327,
+    "p95_ms": 284.90929500003404,
+    "p95_vista_ms": 290.0435540000217,
+    "media_ms": 173.22408927716182,
+    "error_pct": 0.0
+  }
+]

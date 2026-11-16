@@ -1,0 +1,54 @@
+@startuml secuencia
+!include estilo.iuml
+title Diagrama de secuencia · el comprador marca un filtro y luego «Cargar más»
+autonumber
+skinparam maxMessageSize 150
+skinparam ParticipantPadding 4
+actor Comprador as U
+participant "Interfaz web" as UI
+participant "API REST" as SRV
+participant "SesionNavegacion\n(Invoker)" as S
+participant "AlternarFiltro\n(Command)" as C
+participant "MotorOptimizado" as M
+participant "IndiceCatalogo" as I
+participant "Planificador\n(Strategy)" as P
+participant "IteradorCursor\n(Iterator)" as IT
+database "SQLite" as DB
+
+U -> UI : marca «Orgánico certificado»
+UI -> SRV : POST /sesiones/{id}/comandos\n{tipo: filtro, faceta: organico, codigo: 1}
+SRV -> S : ejecutar(AlternarFiltro)
+S -> C : ejecutar(sesion)
+C -> S : guardar() → Memento\n(consulta, productos, cursor, versión)
+C -> M : vista(consulta)
+M -> I : máscaras de categoría y facetas
+I --> M : AND vectorizado → filtro F (m productos)
+group Conteos para todas las facetas
+  M -> I : bincount(códigos[F sin faceta f])
+  I --> M : conteos por valor y por hoja del árbol
+end
+M -> P : elegir(m, N, 24)
+alt filtro poco selectivo (costo recorrido < extracción)
+  P --> M : RecorridoOrdenado
+else filtro muy selectivo
+  P --> M : ExtraccionDirecta
+end
+M -> DB : SELECT … WHERE id IN (24 ids)
+DB --> M : filas de la página
+M --> C : VistaCatalogo + IteradorCursor(cursor=última clave)
+C --> S : historial.push(comando)
+S --> SRV : vista
+SRV --> UI : JSON (productos, total, facetas con conteos, ruta, historial, métricas)
+UI --> U : resultados + opciones en cero deshabilitadas
+
+== «Cargar más» ==
+U -> UI : clic en Cargar más
+UI -> SRV : POST comandos {tipo: mas}
+SRV -> S : ejecutar(CargarMas)
+S -> IT : next()
+IT -> M : pagina_cursor(consulta, cursor)
+M -> P : elegir + recorrer desde el cursor
+M -> DB : 24 filas por id
+IT --> S : Pagina (cursor avanza)
+S --> UI : 48 productos sin repetir
+@enduml

@@ -1,0 +1,57 @@
+@startuml componentes
+!include estilo.iuml
+title Diagrama de componentes · AgroConecta navegación del catálogo (v3)
+left to right direction
+
+package "Cliente web (navegador)" {
+  [Interfaz de navegación\nárbol · facetas · migas · atrás/adelante] as UI
+}
+
+package "Servidor de navegación (FastAPI)" {
+  [API REST\n/api/sesiones · /api/catalogo] as API
+  package "Capa de navegación" {
+    [SesionNavegacion\n«Invoker + Receptor»] as SES
+    [Comandos de navegación\n«Command» + Memento] as CMD
+  }
+  package "Motores intercambiables (Strategy de perfil)" {
+    [MotorLineaBase\nSQL: COUNT + GROUP BY + OFFSET] as MB
+    [MotorOptimizado\nmáscaras + bincount + cursor] as MO
+  }
+  package "Modelo de lectura en memoria" {
+    [IndiceCatalogo\n«Observer»] as IDX
+    [Árbol de categorías\n«Composite»] as ARB
+    [Estrategias de orden\n«Strategy»] as ORD
+    [Planificador de recorrido\n«Strategy»] as PLA
+    [Iteradores de páginas\n«Iterator»] as ITE
+  }
+  [PublicadorInventario\n«Subject»] as PUB
+}
+
+database "SQLite\n(fuente de verdad)\nproductos · categorias" as DB
+
+() "INavegacion" as INAV
+() "IMotorCatalogo" as IMOT
+() "IObservadorInventario" as IOBS
+
+UI ..> INAV : HTTP/JSON
+API - INAV
+API --> SES
+SES --> CMD
+SES ..> IMOT
+MB - IMOT
+MO - IMOT
+MO --> IDX
+MO --> PLA
+MO --> ITE
+MB --> ITE
+MB --> ARB
+IDX --> ARB
+IDX --> ORD
+MB --> ORD
+IDX - IOBS
+PUB ..> IOBS : notifica
+PUB --> DB : escribe primero
+MB --> DB : lee (8 consultas)
+MO --> DB : lee 24 filas por id
+IDX ..> DB : carga inicial
+@enduml

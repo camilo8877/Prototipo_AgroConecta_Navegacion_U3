@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgroConecta · Navegación del catálogo</title>
+<style>
+  :root {
+    --verde: #1f4d2b; --verde-2: #2e7d4f; --verde-claro: #e8f1ea; --fondo: #f6f7f3;
+    --tierra: #a0522d; --crema: #f5ecd9; --texto: #1d2420; --gris: #66706a; --borde: #dfe5dc;
+    --rojo: #b3452c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--texto); background: var(--fondo); }
+  header { background: var(--verde); color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  header h1 { font-family: Cambria, Georgia, serif; font-size: 22px; margin: 0; letter-spacing: .2px; }
+  header h1 small { font-family: "Segoe UI", system-ui, sans-serif; font-weight: 400; font-size: 13px; opacity: .8; margin-left: 8px; }
+  .perfiles { margin-left: auto; display: flex; background: rgba(255,255,255,.12); border-radius: 999px; padding: 3px; }
+  .perfiles button { border: 0; background: transparent; color: #fff; padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 13px; }
+  .perfiles button.activo { background: #fff; color: var(--verde); font-weight: 600; }
+  main { display: grid; grid-template-columns: 270px 1fr 300px; gap: 18px; padding: 18px 24px; align-items: start; }
+  aside, .panel { background: #fff; border: 1px solid var(--borde); border-radius: 10px; padding: 14px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--gris); margin: 4px 0 10px; }
+  .arbol ul { list-style: none; margin: 0; padding-left: 14px; }
+  .arbol > ul { padding-left: 0; }
+  .arbol li > span { display: flex; justify-content: space-between; padding: 3px 6px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  .arbol li > span:hover { background: var(--verde-claro); }
+  .arbol li > span.sel { background: var(--verde); color: #fff; }
+  .arbol li > span.cero { color: #b9c0bb; cursor: default; }
+  .conteo { font-variant-numeric: tabular-nums; color: var(--gris); font-size: 12px; }
+  .sel .conteo { color: #d9eadc; }
+  .faceta { border-top: 1px solid var(--borde); padding-top: 10px; margin-top: 10px; }
+  .faceta label { display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 2px 0; cursor: pointer; }
+  .faceta label.cero { color: #b9c0bb; cursor: not-allowed; }
+  .faceta label .conteo { margin-left: auto; }
+  input[type=checkbox] { accent-color: var(--verde-2); }
+  .barra { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .migas { font-size: 14px; color: var(--gris); }
+  .migas a { color: var(--verde-2); cursor: pointer; text-decoration: none; }
+  .total { font-family: Cambria, Georgia, serif; font-size: 22px; color: var(--verde); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .chip { background: var(--verde-claro); border: 1px solid #cfe1d3; color: var(--verde); padding: 3px 10px; border-radius: 999px; font-size: 13px; cursor: pointer; }
+  .chip:hover { background: #d6e8da; }
+  select, .btn { font: inherit; font-size: 14px; border: 1px solid var(--borde); background: #fff; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.primario { background: var(--verde); color: #fff; border-color: var(--verde); }
+  .derecha { margin-left: auto; display: flex; gap: 8px; }
+  .grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .tarjeta h3 { margin: 0; font-size: 15px; }
+  .origen { font-size: 12px; color: var(--gris); }
+  .precio { font-family: Cambria, Georgia, serif; font-size: 20px; color: var(--verde); }
+  .precio small { font-family: "Segoe UI", system-ui, sans-serif; font-size: 12px; color: var(--gris); }
+  .etiquetas { display: flex; gap: 4px; flex-wrap: wrap; }
+  .et { font-size: 11px; padding: 2px 7px; border-radius: 999px; background: #f0f2ee; color: #3c4640; }
+  .et.org { background: #e3f2e6; color: var(--verde-2); }
+  .et.fresco { background: var(--crema); color: var(--tierra); }
+  .mas { display: flex; justify-content: center; margin: 16px 0 4px; }
+  .metrica { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px dashed var(--borde); gap: 10px; }
+  .metrica b { font-variant-numeric: tabular-nums; text-align: right; }
+  .grande { font-family: Cambria, Georgia, serif; font-size: 34px; color: var(--verde); line-height: 1; }
+  .grande.lento { color: var(--rojo); }
+  .panel + .panel { margin-top: 14px; }
+  .historial { list-style: decimal; padding-left: 20px; margin: 0; font-size: 13px; max-height: 190px; overflow: auto; }
+  .historial li.rehacer { color: #b9c0bb; }
+  .eventos { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  .nota { font-size: 12px; color: var(--gris); margin-top: 8px; }
+  .vacio { padding: 40px; text-align: center; color: var(--gris); background: #fff; border-radius: 10px; border: 1px dashed var(--borde); }
+  @media (max-width: 1100px) { main { grid-template-columns: 240px 1fr; } .lateral-der { grid-column: 1 / -1; } }
+  @media (max-width: 720px) { main { grid-template-columns: 1fr; padding: 12px 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>AgroConecta <small>Navegación del catálogo · Unidad 3</small></h1>
+  <div class="perfiles" id="perfiles">
+    <button data-perfil="optimizado" class="activo">Optimizado</button>
+    <button data-perfil="base">Línea base</button>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <h2>Categorías</h2>
+    <div class="arbol" id="arbol"></div>
+    <div id="facetas"></div>
+  </aside>
+
+  <section>
+    <div class="barra">
+      <div class="migas" id="migas"></div>
+    </div>
+    <div class="barra">
+      <span class="total" id="total">—</span>
+      <div class="derecha">
+        <button class="btn" id="atras" title="Deshacer (Command)">← Atrás</button>
+        <button class="btn" id="adelante" title="Rehacer (Command)">Adelante →</button>
+        <select id="orden"></select>
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="grilla" id="grilla"></div>
+    <div class="mas"><button class="btn primario" id="cargarMas">Cargar más</button></div>
+  </section>
+
+  <div class="lateral-der">
+    <div class="panel">
+      <h2>Arquitectura en vivo</h2>
+      <div class="grande" id="tiempo">—</div>
+      <div class="nota" id="tipoOp">tiempo en el servidor de la última operación</div>
+      <div style="margin-top:10px">
+        <div class="metrica"><span>Perfil</span><b id="mPerfil">—</b></div>
+        <div class="metrica"><span>Estrategia</span><b id="mEstrategia">—</b></div>
+        <div class="metrica"><span>Conteo total</span><b id="mTotal">—</b></div>
+        <div class="metrica"><span>Facetas y árbol</span><b id="mFacetas">—</b></div>
+        <div class="metrica"><span>Página</span><b id="mPagina">—</b></div>
+        <div class="metrica"><span>Consultas SQL</span><b id="mSql">—</b></div>
+        <div class="metrica"><span>Versión del índice</span><b id="mVersion">—</b></div>
+        <div class="metrica"><span>Productos en catálogo</span><b id="mProductos">—</b></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Historial (Command)</h2>
+      <ol class="historial" id="historial"></ol>
+    </div>
+    <div class="panel">
+      <h2>Eventos de inventario (Observer)</h2>
+      <div class="eventos">
+        <button class="btn" data-evento="nuevo_lote">+ 50 lotes nuevos</button>
+        <button class="btn" data-evento="agotado">50 lotes agotados</button>
+        <button class="btn" data-evento="cambio_precio">50 cambios de precio</button>
+      </div>
+      <div class="nota" id="notaEvento">El índice se actualiza por eventos; los conteos cambian sin reconstruirlo.</div>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const pesos = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 0 });
+const ms = (x) => (x < 10 ? x.toFixed(2) : x.toFixed(1)).replace(".", ",") + " ms";
+let perfil = "optimizado", sesion = null, vista = null;
+
+async function api(ruta, cuerpo) {
+  const r = await fetch(ruta, cuerpo === undefined ? {} : {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+const comando = (c) => api(`/api/sesiones/${sesion}/comandos`, c).then(pintar);
+
+async function iniciar() {
+  const v = await api("/api/sesiones", { perfil });
+  sesion = v.sesion_id; pintar(v);
+}
+
+function nodoHTML(n, sel) {
+  const cls = n.id === sel ? "sel" : (n.conteo === 0 ? "cero" : "");
+  const hijos = n.hijos.length ? `<ul>${n.hijos.map(h => nodoHTML(h, sel)).join("")}</ul>` : "";
+  return `<li><span class="${cls}" data-cat="${n.id}" data-n="${n.conteo}">${n.nombre}<span class="conteo">${pesos.format(n.conteo)}</span></span>${hijos}</li>`;
+}
+
+function pintar(v) {
+  vista = v;
+  // Árbol (Composite): se despliega solo la rama seleccionada
+  const ruta = new Set(v.ruta.map(r => r.id));
+  const podar = (n) => ({ ...n, hijos: (ruta.has(n.id) ? n.hijos.map(podar) : []) });
+  const raiz = podar(v.arbol);
+  $("arbol").innerHTML = `<ul>${nodoHTML(raiz, v.consulta.categoria_id)}</ul>`;
+
+  // Facetas con conteos: las opciones en cero se deshabilitan (sin callejones sin salida)
+  $("facetas").innerHTML = v.facetas.map(f => `
+    <div class="faceta"><h2>${f.etiqueta}</h2>
+      ${f.valores.map(x => `<label class="${x.conteo === 0 && !x.seleccionado ? "cero" : ""}">
+        <input type="checkbox" data-faceta="${f.nombre}" data-codigo="${x.codigo}" ${x.seleccionado ? "checked" : ""}
+          ${x.conteo === 0 && !x.seleccionado ? "disabled" : ""}> ${x.etiqueta}
+        <span class="conteo">${pesos.format(x.conteo)}</span></label>`).join("")}
+    </div>`).join("");
+
+  $("migas").innerHTML = v.ruta.map((r, i) => i === v.ruta.length - 1
+    ? `<b>${r.nombre}</b>` : `<a data-cat="${r.id}">${r.nombre}</a>`).join(" › ");
+  $("total").textContent = `${pesos.format(v.total)} lotes disponibles`;
+
+  const chips = [];
+  for (const f of v.facetas) for (const x of f.valores) if (x.seleccionado)
+    chips.push(`<span class="chip" data-faceta="${f.nombre}" data-codigo="${x.codigo}">${x.etiqueta} ✕</span>`);
+  if (chips.length) chips.push(`<span class="chip" id="limpiar">Limpiar todo</span>`);
+  $("chips").innerHTML = chips.join("");
+
+  $("orden").innerHTML = v.ordenes.map(o => `<option value="${o.nombre}" ${o.nombre === v.consulta.orden ? "selected" : ""}>${o.etiqueta}</option>`).join("");
+
+  $("grilla").innerHTML = v.productos.length ? v.productos.map(p => `
+    <article class="tarjeta">
+      <h3>${p.nombre}</h3>
+      <div class="origen">${p.finca} · ${p.municipio}</div>
+      <div class="precio">$${pesos.format(p.precio)} <small>/ kg</small></div>
+      <div class="etiquetas">
+        <span class="et">${p.calidad}</span>
+        ${p.organico ? '<span class="et org">Orgánico</span>' : ""}
+        <span class="et ${p.dias_cosecha < 2 ? "fresco" : ""}">${p.dias_cosecha === 0 ? "Cosecha de hoy" : `Hace ${p.dias_cosecha} d`}</span>
+        <span class="et">${pesos.format(p.disponible_kg)} kg</span>
+        <span class="et">${String(p.distancia_km).replace(".", ",")} km</span>
+      </div>
+    </article>`).join("") : `<div class="vacio">No hay lotes con esta combinación.</div>`;
+  $("cargarMas").style.display = v.hay_mas ? "" : "none";
+  $("cargarMas").textContent = `Cargar más (${pesos.format(v.productos.length)} de ${pesos.format(v.total)})`;
+
+  $("atras").disabled = !v.historial.deshacer.length;
+  $("adelante").disabled = !v.historial.rehacer.length;
+  $("historial").innerHTML = v.historial.deshacer.map(e => `<li>${e}</li>`).join("") +
+    v.historial.rehacer.map(e => `<li class="rehacer">${e}</li>`).join("") || '<li style="list-style:none;color:#8a938d">Aún no hay acciones</li>';
+
+  const op = v.metricas.operacion;
+  $("tiempo").textContent = ms(op.tiempo_ms);
+  $("tiempo").classList.toggle("lento", op.tiempo_ms > 50);
+  $("tipoOp").textContent = { consulta: "nueva consulta", pagina: "página siguiente", deshacer: "deshacer / volver", inicio: "inicio" }[op.tipo] + " · tiempo en el servidor";
+  $("mPerfil").textContent = v.perfil === "base" ? "Línea base" : "Optimizado";
+  $("mEstrategia").textContent = op.estrategia || v.metricas.estrategia;
+  $("mTotal").textContent = ms(v.metricas.detalle_ms.total || 0);
+  $("mFacetas").textContent = ms(v.metricas.detalle_ms.facetas || 0);
+  $("mPagina").textContent = ms(v.metricas.detalle_ms.pagina || 0);
+  $("mSql").textContent = v.metricas.consultas_sql;
+  $("mVersion").textContent = v.version_indice;
+  api("/api/info").then(i => $("mProductos").textContent = pesos.format(i.productos));
+}
+
+document.addEventListener("click", (e) => {
+  const cat = e.target.closest("[data-cat]");
+  if (cat && cat.dataset.n !== "0" && Number(cat.dataset.cat) !== vista.consulta.categoria_id)
+    return comando({ tipo: "categoria", categoria_id: Number(cat.dataset.cat) });
+  const chip = e.target.closest(".chip[data-faceta]");
+  if (chip) return comando({ tipo: "filtro", faceta: chip.dataset.faceta, codigo: Number(chip.dataset.codigo) });
+  if (e.target.id === "limpiar") return comando({ tipo: "limpiar" });
+  const ev = e.target.closest("[data-evento]");
+  if (ev) return api("/api/inventario/simular", { tipo: ev.dataset.evento, cantidad: 50 }).then(r => {
+    $("notaEvento").textContent = `${r.cantidad} eventos «${r.tipo}» en ${ms(r.tiempo_total_ms)} (${ms(r.ms_por_evento)} c/u). Versión del índice: ${r.version_indice}.`;
+    return api(`/api/sesiones/${sesion}`).then(pintar);
+  });
+  const p = e.target.closest("[data-perfil]");
+  if (p) {
+    perfil = p.dataset.perfil;
+    document.querySelectorAll("[data-perfil]").forEach(b => b.classList.toggle("activo", b === p));
+    return iniciar();
+  }
+});
+document.addEventListener("change", (e) => {
+  if (e.target.matches("input[data-faceta]"))
+    comando({ tipo: "filtro", faceta: e.target.dataset.faceta, codigo: Number(e.target.dataset.codigo) });
+  if (e.target.id === "orden") comando({ tipo: "orden", orden: e.target.value });
+});
+$("cargarMas").onclick = () => comando({ tipo: "mas" });
+$("atras").onclick = () => api(`/api/sesiones/${sesion}/deshacer`, {}).then(pintar);
+$("adelante").onclick = () => api(`/api/sesiones/${sesion}/rehacer`, {}).then(pintar);
+iniciar();
+</script>
+</body>
+</html>

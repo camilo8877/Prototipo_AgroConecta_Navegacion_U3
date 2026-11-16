@@ -1,0 +1,37 @@
+@startuml actividad
+!include estilo.iuml
+title Diagrama de actividad · flujo de navegación guiada por facetas
+start
+:El comprador abre el catálogo;
+:Sesión crea la consulta inicial\n(raíz, sin filtros, menor precio);
+repeat
+  partition "Motor optimizado" {
+    :Combinar máscaras (AND)\n→ filtro F con m productos;
+    :Contar facetas y árbol con bincount\n(excluyendo la faceta propia);
+    if (¿costo(recorrido) <= costo(extracción)?) then (sí)
+      :Recorrer el índice ordenado\ndesde el cursor;
+    else (no)
+      :Extraer candidatos de F\ny ordenar solo esos;
+    endif
+    :Leer 24 productos por id;
+  }
+  :Mostrar resultados, migas de pan\ny facetas con conteo;
+  :Deshabilitar opciones con conteo 0\n(sin callejones sin salida);
+  :El comprador elige una acción;
+  switch (¿Qué acción?)
+  case (categoría / filtro / orden)
+    :Crear comando y guardar memento;
+  case (Cargar más)
+    :Iterador avanza con el cursor;
+  case (Atrás)
+    if (¿versión del índice igual?) then (sí)
+      :Restaurar memento (sin consultar);
+    else (no)
+      :Volver a consultar;
+    endif
+  endswitch
+repeat while (¿Sigue navegando?) is (sí)
+-> no;
+:Agrega lotes al pedido;
+stop
+@enduml

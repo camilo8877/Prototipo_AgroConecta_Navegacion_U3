@@ -1,0 +1,58 @@
+@startuml clases_optimizacion
+!include estilo.iuml
+title Diagrama de clases 2/2 · optimización: Strategy y Observer
+hide empty members
+skinparam linetype ortho
+abstract class MotorCatalogo
+class MotorOptimizado {
+  +vista(c)
+  +pagina_cursor(c, cursor)
+  -estrategia_forzada
+}
+MotorCatalogo <|-- MotorOptimizado
+package "Strategy" {
+  interface EstrategiaOrden {
+    +sql: str
+    +clave_vector(cols, ids)
+  }
+  class MenorPrecio
+  class MasFresco
+  class MasCercano
+  EstrategiaOrden <|.. MenorPrecio
+  EstrategiaOrden <|.. MasFresco
+  EstrategiaOrden <|.. MasCercano
+  interface EstrategiaRecorrido {
+    +pagina(filtro, claves, ids, cursor, tam)
+  }
+  class RecorridoOrdenado
+  class ExtraccionDirecta
+  class PlanificadorRecorrido {
+    +costos(m, N, tam)
+    +elegir(m, N, tam)
+  }
+  EstrategiaRecorrido <|.. RecorridoOrdenado
+  EstrategiaRecorrido <|.. ExtraccionDirecta
+  PlanificadorRecorrido --> EstrategiaRecorrido
+}
+package "Observer" {
+  class PublicadorInventario {
+    +suscribir(o)
+    +registrar_lote() / agotar() / cambiar_precio()
+  }
+  interface ObservadorInventario {
+    +actualizar(evento)
+  }
+  class IndiceCatalogo {
+    +mascaras_faceta
+    +mascaras_categoria
+    +ordenes
+    +version: int
+  }
+  PublicadorInventario o-- "0..*" ObservadorInventario
+  ObservadorInventario <|.. IndiceCatalogo
+}
+MotorOptimizado --> IndiceCatalogo
+MotorOptimizado --> PlanificadorRecorrido
+MotorOptimizado ..> EstrategiaOrden
+IndiceCatalogo ..> EstrategiaOrden : ordena
+@enduml

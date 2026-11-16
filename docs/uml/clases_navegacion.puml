@@ -1,0 +1,81 @@
+@startuml clases_navegacion
+!include estilo.iuml
+title Diagrama de clases 1/2 · navegación: Command, Iterator, Composite y motores
+hide empty members
+skinparam linetype ortho
+package "Command" {
+  class SesionNavegacion {
+    +consulta: Consulta
+    +productos: list
+    +ejecutar(c: Comando)
+    +deshacer() / rehacer()
+    +guardar(): Memento
+    +restaurar(m: Memento)
+  }
+  abstract class Comando {
+    -memento: Memento
+    +ejecutar(s) / deshacer(s)
+    +{abstract} aplicar(s)
+  }
+  class SeleccionarCategoria
+  class AlternarFiltro
+  class CambiarOrden
+  class CargarMas
+  class Memento {
+    consulta, productos,
+    estado_iterador, version
+  }
+  Comando <|-- SeleccionarCategoria
+  Comando <|-- AlternarFiltro
+  Comando <|-- CambiarOrden
+  Comando <|-- CargarMas
+  SesionNavegacion o-- "0..*" Comando : historial
+  Comando --> Memento
+}
+package "Iterator" {
+  abstract class IteradorPaginas {
+    +__next__(): Pagina
+    +estado() / restaurar()
+  }
+  class IteradorOffset {
+    pagina: int
+  }
+  class IteradorCursor {
+    cursor: int
+  }
+  IteradorPaginas <|-- IteradorOffset
+  IteradorPaginas <|-- IteradorCursor
+}
+package "Motores" {
+  abstract class MotorCatalogo {
+    +vista(c): (VistaCatalogo, IteradorPaginas)
+    +crear_iterador(c): IteradorPaginas
+  }
+  class MotorLineaBase
+  class MotorOptimizado
+  MotorCatalogo <|-- MotorLineaBase
+  MotorCatalogo <|-- MotorOptimizado
+}
+package "Composite" {
+  abstract class NodoCategoria {
+    +id: int
+    +nombre: str
+    +padre: CategoriaCompuesta
+    +{abstract} hojas(): list
+    +{abstract} contar(conteo_hojas): int
+    +ruta(): list
+  }
+  class CategoriaHoja
+  class CategoriaCompuesta {
+    +hijos: list<NodoCategoria>
+    +agregar(hijo)
+  }
+  NodoCategoria <|-- CategoriaHoja
+  NodoCategoria <|-- CategoriaCompuesta
+  CategoriaCompuesta o-- "1..*" NodoCategoria
+}
+SesionNavegacion --> MotorCatalogo
+SesionNavegacion --> IteradorPaginas
+MotorCatalogo --> NodoCategoria : arbol
+IteradorPaginas --> MotorCatalogo
+@enduml

@@ -1,0 +1,55 @@
+E1 · escalabilidad con el tamaño del catálogo
+  n=  10000 base          p50=    5.21 ms  p95=    8.43 ms
+  n=  10000 base_indices  p50=    2.25 ms  p95=    5.10 ms
+  n=  10000 optimizado    p50=    0.12 ms  p95=    0.21 ms
+  n=  50000 base          p50=   22.38 ms  p95=   37.36 ms
+  n=  50000 base_indices  p50=   18.08 ms  p95=   41.94 ms
+  n=  50000 optimizado    p50=    0.26 ms  p95=    0.43 ms
+  n= 200000 base          p50=  100.41 ms  p95=  165.16 ms
+  n= 200000 base_indices  p50=   76.98 ms  p95=  173.57 ms
+  n= 200000 optimizado    p50=    0.71 ms  p95=    1.20 ms
+E2 · costo de la página k (OFFSET vs cursor), 200.000 productos
+  catalogo_completo  página   1: offset   14.01 ms · cursor  0.06 ms
+  catalogo_completo  página  10: offset   12.62 ms · cursor  0.05 ms
+  catalogo_completo  página  50: offset   15.69 ms · cursor  0.06 ms
+  catalogo_completo  página 100: offset   21.04 ms · cursor  0.05 ms
+  catalogo_completo  página 250: offset   34.07 ms · cursor  0.05 ms
+  catalogo_completo  página 500: offset   73.21 ms · cursor  0.09 ms
+  frutas             página   1: offset   25.82 ms · cursor  0.15 ms
+  frutas             página  10: offset   26.29 ms · cursor  0.09 ms
+  frutas             página  50: offset   28.50 ms · cursor  0.09 ms
+  frutas             página 100: offset   30.86 ms · cursor  0.09 ms
+  frutas             página 250: offset   28.29 ms · cursor  0.10 ms
+  frutas             página 500: offset   34.01 ms · cursor  0.06 ms
+E3 · estrategias de recorrido según selectividad (200.000 productos)
+    0.02% (m=    40): recorrido   0.134 ms · extracción  0.012 ms → elige extracción directa
+    0.05% (m=   100): recorrido   0.048 ms · extracción  0.014 ms → elige extracción directa
+    0.10% (m=   200): recorrido   0.027 ms · extracción  0.015 ms → elige extracción directa
+    0.20% (m=   400): recorrido   0.016 ms · extracción  0.018 ms → elige recorrido ordenado
+    0.50% (m=  1000): recorrido   0.010 ms · extracción  0.028 ms → elige recorrido ordenado
+    1.00% (m=  2001): recorrido   0.007 ms · extracción  0.037 ms → elige recorrido ordenado
+    2.00% (m=  4002): recorrido   0.007 ms · extracción  0.049 ms → elige recorrido ordenado
+    5.00% (m= 10005): recorrido   0.005 ms · extracción  0.151 ms → elige recorrido ordenado
+   10.00% (m= 20010): recorrido   0.005 ms · extracción  0.221 ms → elige recorrido ordenado
+   25.00% (m= 50025): recorrido   0.005 ms · extracción  0.424 ms → elige recorrido ordenado
+   50.00% (m=100050): recorrido   0.005 ms · extracción  0.764 ms → elige recorrido ordenado
+  100.00% (m=200100): recorrido   0.005 ms · extracción  1.761 ms → elige recorrido ordenado
+  Casos correlacionados (filtro real + orden):
+    Arándano · menor precio    m=  9915 recorrido   0.22 · extracción  0.14 · adaptativo  0.14 ms (recorrido ordenado)
+    Sonsón · más cercano       m= 12224 recorrido   0.15 · extracción  0.16 · adaptativo  0.26 ms (recorrido ordenado)
+    5+ días · más fresco       m= 26920 recorrido   0.26 · extracción  0.41 · adaptativo  0.26 ms (recorrido ordenado)
+E4 · consistencia de la paginación con inventario cambiando (50.000 productos)
+  base        mostrados=480 duplicados=45 omitidos=0
+  optimizado  mostrados=480 duplicados=0 omitidos=0
+E5 · callejones sin salida: filtros a ciegas vs facetas con conteo (50.000 productos)
+  a_ciegas  sesiones con callejón=8.7 % clics/sesión=4.23
+  guiada    sesiones con callejón=0.0 % clics/sesión=4.00
+E6 · volver atrás (Command): nueva consulta vs memento (200.000 productos)
+  base        p50=230.029 ms  p95=322.206 ms
+  optimizado  p50=0.001 ms  p95=0.013 ms
+E7 · mantenimiento del índice por eventos vs reconstrucción (200.000 productos)
+  agotado        p50=0.000 ms
+  cambio_precio  p50=1.196 ms
+  nuevo_lote     p50=1.248 ms
+  reconstrucción completa: 692 ms
+Listo en 126 s → /home/claude/agroconecta-navegacion/resultados/benchmark.json

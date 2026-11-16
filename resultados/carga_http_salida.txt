@@ -1,0 +1,8 @@
+base          5 usuarios:    18.0 pet/s  p50   307.9 ms  p95   503.3 ms  error 0.0 %
+base         10 usuarios:    17.5 pet/s  p50   633.9 ms  p95   928.1 ms  error 0.0 %
+base         25 usuarios:    16.3 pet/s  p50  1660.0 ms  p95  2592.2 ms  error 0.0 %
+base         50 usuarios:    16.5 pet/s  p50  3025.1 ms  p95  4532.6 ms  error 0.0 %
+optimizado    5 usuarios:   379.9 pet/s  p50    12.0 ms  p95    24.5 ms  error 0.0 %
+optimizado   10 usuarios:   349.9 pet/s  p50    27.3 ms  p95    50.8 ms  error 0.0 %
+optimizado   25 usuarios:   303.9 pet/s  p50    79.1 ms  p95   141.4 ms  error 0.0 %
+optimizado   50 usuarios:   287.2 pet/s  p50   165.9 ms  p95   284.9 ms  error 0.0 %
